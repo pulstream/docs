@@ -2,22 +2,21 @@
 
 * [🏠 Introduction](README.md)
 
-## 🚀 Getting Started                            
+## 🚀 Getting started                            
 * [Quickstart (5 min)](getting-started/quickstart.md)
-* [Complete Tutorial](getting-started/tutorial.md)
-* [Core Concepts](getting-started/concepts.md)
+* [Complete tutorial](getting-started/tutorial.md)
+* [Core concepts](getting-started/concepts.md)
 
-## 🏗️ Platform Architecture
+## 🏗️ Platform architecture
 
-* [System Architecture](architecture/README.md)
-  * [Architecture Overview](architecture/overview.md)
-  * [Component Details](architecture/components.md)
-  * [Data Flow Pipeline](architecture/data-flow.md)
+* [System architecture](architecture/README.md)
+  * [Architecture overview](architecture/overview.md)
+  * [Component details](architecture/components.md)
+  * [Data flow pipeline](architecture/data-flow.md)
 
-## Core Components
-
-* [📋 Rule System](rule-system/README.md)
-  * [Subsections...]
+## DSL system
+* [📋 DSL structure](dsl-system/structure.md)
+## Core components
 
 * [🔄 Carbon Router](carbon-router/README.md)
   * [Yellowstone Integration](carbon-router/yellowstone.md)
