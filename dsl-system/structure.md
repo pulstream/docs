@@ -35,11 +35,9 @@ Load data from various sources.
 | `source` | enum | ✅ | Data source: `rocksdb`, `main_topic` |
 | `key` | string | ✅ | Key/path to retrieve data, separate with "." |
 
-### **Data sources**
-
 #### **RocksDB state**
 
-[Learn more about Rocksdb state →](dsl-system/rocksdb-state.md)
+[Learn more about Rocksdb state →](rocksdb-state.md)
 
 ```json
 {
@@ -51,7 +49,7 @@ Load data from various sources.
 
 #### **Main topic data source**
 
-[Learn more about Main topic →](dsl-system/main-topics.md)
+[Learn more about Main topic →](main-topics.md)
 
 ```json
 {
