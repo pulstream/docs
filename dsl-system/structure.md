@@ -33,20 +33,26 @@ Load data from various sources.
 |-------|------|----------|-------------|
 | `state_name` | string | ✅ | Variable name to use in conditions |
 | `source` | enum | ✅ | Data source: `rocksdb`, `main_topic` |
-| `key` | string | ✅ | Key/path to retrieve data |
+| `key` | string | ✅ | Key/path to retrieve data, separate with "." |
 
 ### **Data sources**
 
-#### **RocksDB source**
+#### **RocksDB state**
+
+[Learn more about Rocksdb state →](dsl-system/rocksdb-state.md)
+
 ```json
 {
   "state_name": "historical_data",
   "source": "rocksdb", 
-  "key": "column_family:key_name"
+  "key": "column_family.key_name"
 }
 ```
 
 #### **Main topic data source**
+
+[Learn more about Main topic →](dsl-system/main-topics.md)
+
 ```json
 {
   "state_name": "trade_amount",

@@ -16,6 +16,8 @@
 
 ## DSL system
 * [📋 DSL structure](dsl-system/structure.md)
+* [🗄️ Rocksdb state](dsl-system/rocksdb-state.md)
+* [📨 Main topics](dsl-system/main-topics.md)
 ## Core components
 
 * [🔄 Carbon Router](carbon-router/README.md)
