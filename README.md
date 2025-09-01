@@ -37,7 +37,7 @@ Pulstream consists of four main components:
 | Section | Description |
 |---------|-------------|
 | [🚀 Getting Started](getting-started/quickstart.md) | Quick start guides and tutorials |
-| [📋 DSL System](rule-system/README.md) | Complete DSL system documentation |
+| [📋 DSL System](dsl-system/structure.md) | Complete DSL system documentation |
 | [🏗️ Architecture](architecture/README.md) | System design and components |
 | [💻 Development](development/README.md) | Building and testing streams |
 | [💰 Monetization](monetization/README.md) | Earn from your streams |
