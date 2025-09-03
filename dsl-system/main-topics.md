@@ -116,7 +116,7 @@ struct Message {
 ```
 
 - 📤 `wasm.trader.just-funded`
-  - Purpose: flag addresses that traded ≥ 0.5 SOL and received SOL deposits in the last 24 hours (external sync e.g. Solscan).
+  - Purpose: flag addresses that traded ≥ 0.5 SOL and received SOL deposits in the last 24 hours.
   - Emits when: an address satisfies both conditions above.
   - Model:
 
