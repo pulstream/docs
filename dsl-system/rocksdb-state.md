@@ -213,36 +213,3 @@ pub struct TraderActivityEvent {
     pub amount_out: u64,     // output amount
 }
 ```
-
-## 3. Trade
-
-### 3.1 Trade in slot
-
-- Column family: trade
-- Applies to: while token is bonding and for 5 minutes after migrating
-- Query key: `ts:{mint}:{slot}`
-
-```rust
-pub struct TradeInSlot {
-    pub id: String,                   // record id for (mint, slot)
-    pub mint: String,                 // token mint address
-    pub program: String,              // source program/market for trades in this slot
-    pub count: u64,                   // number of trades observed in slot
-    pub total_volume: u64,            // total traded volume in slot
-    pub last_updated_slot: u64,       // slot when last updated
-    pub signature_logs: Vec<SignatureLog>, // per-transaction breakdown
-    pub bonded: bool,                 // whether token was migrated (bonded)
-    pub is_bundle: bool,              // true if a bundle of txs in same slot
-}
-```
-
-```rust
-pub struct SignatureLog {
-    pub signature: String,        // transaction signature
-    pub signers: HashSet<String>, // list of signer addresses
-    pub instructions: Vec<String>,// actions in transaction (buy, sell, create)
-
-    pub buy_amt_sol: f64,         // total SOL bought in this tx
-    pub sell_amt_sol: f64,        // total SOL sold in this tx
-}
-```
