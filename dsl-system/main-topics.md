@@ -61,7 +61,7 @@ struct Message {
 }
 ```
 
-- 📤 `wasm.token.trade_in_one_slot`
+- 📤 `wasm.token.trade-in-slot`
   - Purpose: per-slot trade summary for a token.
   - Emits when: total traded volume in the slot ≥ 5 SOL.
   - Filters: tokens created after system start; only while not bonded and up to 5 minutes after bonding.
