@@ -186,16 +186,6 @@ struct Message {
 }
 ```
 
-### Public UI topics
-
-Used by UI and exposed publicly:
-
-- `wasm.launchpad.pumpfun.created`
-- `wasm.launchpad.bonk.created`
-  - These two are merged and displayed together (as in the current UI)
-- `wasm.token.liquidity-pulse`
-- `wasm.trader.just-funded`
-
 ## Raw Topics
 
 - `raw.token-state-changed`
