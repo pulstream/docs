@@ -220,4 +220,4 @@ struct Message {
 ```
 
 - `raw.token_created`
-  - Recommendation: remove. UI should merge `wasm.launchpad.pumpfun.created` and `wasm.launchpad.bonk.created` for a unified creation feed.
+  Merge `wasm.launchpad.pumpfun.created` and `wasm.launchpad.bonk.created` for a unified creation feed.
