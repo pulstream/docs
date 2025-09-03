@@ -90,7 +90,7 @@ pub struct SignatureLog {
 }
 ```
 
-### User-driven actions (batch by 2 slots if TPS is high)
+### User-driven actions
 
 - 📤 `wasm.trader.trade-half-sol`
 
@@ -132,7 +132,7 @@ struct Message {
 }
 ```
 
-### Launchpad events (batch by 2 slots if TPS is high)
+### Launchpad events
 
 - 📤 `wasm.launchpad.pumpfun.created` and 📤 `wasm.launchpad.bonk.created`
 
