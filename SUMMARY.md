@@ -5,30 +5,24 @@
 ## 🚀 Getting started                            
 * [Quickstart (5 min)](getting-started/quickstart.md)
 * [Complete tutorial](getting-started/tutorial.md)
-* [Core concepts](getting-started/concepts.md)
 
-## 🏗️ Platform architecture
+## 🏗️ Architecture
 
-* [System architecture](architecture/README.md)
-  * [Architecture overview](architecture/overview.md)
-  * [Component details](architecture/components.md)
-  * [Data flow pipeline](architecture/data-flow.md)
+* [System Overview](architecture/README.md)
+* [Data Flow Pipeline](architecture/data-flow.md)
+* [🔄 Carbon Router](architecture/carbon-router.md)
+  * [Yellowstone Integration](architecture/yellowstone.md)
+  * [State Management](architecture/state-management.md)
+  * [Topic Publishing](architecture/topics.md)
+* [⚙️ Runtime Engine](architecture/runtime.md)
+  * [WASM Execution](architecture/wasm.md)
+  * [Function Lifecycle](architecture/lifecycle.md)
+  * [Performance](architecture/performance.md)
 
 ## DSL system
 * [📋 DSL structure](dsl-system/structure.md)
-* [🗄️ Rocksdb state](dsl-system/rocksdb-state.md)
+* [🗄️ Rocksdb states](dsl-system/rocksdb-state.md)
 * [📨 Main topics](dsl-system/main-topics.md)
-## Core components
-
-* [🔄 Carbon Router](carbon-router/README.md)
-  * [Yellowstone Integration](carbon-router/yellowstone.md)
-  * [State Management](carbon-router/state.md)
-  * [Topic Publishing](carbon-router/topics.md)
-
-* [⚙️ Runtime Engine](runtime/README.md)
-  * [WASM Execution](runtime/wasm.md)
-  * [Function Lifecycle](runtime/lifecycle.md)
-  * [Performance](runtime/performance.md)
 
 ## Development
 
@@ -36,8 +30,6 @@
 * [🧪 Testing](testing/README.md)
 * [📦 Deployment](deployment/README.md)
 
-## Advanced Topics
+## Advanced
 
-* [💰 Stream Monetization](monetization/README.md)
-* [📊 Analytics](analytics/README.md)
-* [🔒 Security](security/README.md)
+* [💰 Stream monetization](monetization/README.md)
