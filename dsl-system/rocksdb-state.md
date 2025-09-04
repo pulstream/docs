@@ -76,6 +76,7 @@ The WASM function returns the following data structure:
   "source": "rocksdb", 
   "key": "column_family.key_name"
 }
+```
 
 ### 1.2 Holders
 
