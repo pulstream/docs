@@ -62,20 +62,20 @@ The following request retrieves data for the $TRUMP token:
 
 ```json
 {
-  "stream_definition": {
+  "stream_definition": {                    // StreamDefinition
     {
-      "name": "string (required)",
-      "description": "string (required)",
-      "state": [
+      "name": "string (required)",        // Human-readable name for the stream
+      "description": "string (required)", // Short description of what the stream does
+      "state": [                           // List of state lookups used by the stream
         {
-            "state_name": "my_custom_state",
-            "source": "rocksdb", 
-            "key": "token.t:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+            "state_name": "my_custom_state", // Local alias to reference this state in conditions/actions
+            "source": "rocksdb",              // Source type: use RocksDB as the backing store
+            "key": "token#t:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Full RocksDB key to fetch token
         }
       ],
-      "topic_subscription": {}, // TopicSubscription
-      "conditions": [...], // ConditionGroup
-      "actions": [...] // Action[]
+      "topic_subscription": {},            // TopicSubscription (configure topics to listen to)
+      "conditions": [...],                 // ConditionGroup[] (optional guards/filters)
+      "actions": [...]                     // Action[] (what to execute when conditions pass)
     }
   }
 }
@@ -85,9 +85,25 @@ The WASM function returns the following data structure:
 
 ```json
 {
-  "state_name": "historical_data",
-  "source": "rocksdb", 
-  "key": "column_family.key_name"
+  "stream_definition": {                         // StreamDefinition
+    "name": "string (required)",                 // Name of the stream
+    "description": "string (required)",          // Description of the stream
+    "state": [                                     // States resolved at runtime
+      {
+        "state_name": "mint",                     // Alias for the event-derived mint value
+        "source": "event_data",                   // Use event payload from WASM topics
+        "key": "data.mint"                        // JSON path to the mint field in event data
+      },
+      {
+        "state_name": "token_state",              // Alias for the fetched token state
+        "source": "rocksdb",                      // Source from RocksDB
+        "key": "token#t:{mint}"                   // Interpolate the above `mint` into the RocksDB key
+      }
+    ],
+    "topic_subscription": {},                      // TopicSubscription configuration
+    "conditions": [...],                           // ConditionGroup[]
+    "actions": [...]                               // Action[]
+  }
 }
 ```
 
@@ -103,6 +119,62 @@ pub struct TokenHolders {
     pub mint: String,                       // token mint address
     pub top_holders: HashMap<String, u64>,  // top 100 holders: address -> balance
     pub holders_count: usize,               // total unique holders
+}
+```
+
+#### Example Usage:
+
+The following request retrieves top holders for the $TRUMP token:
+
+- Token Symbol: $TRUMP
+- Contract Address: 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Human-readable name
+      "description": "string (required)", // What this stream retrieves
+      "state": [                           // Resolved states
+        {
+            "state_name": "my_custom_state", // Alias for holders snapshot
+            "source": "rocksdb",              // Read from RocksDB
+            "key": "token#h:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Holders by mint
+        }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // Optional conditions
+      "actions": [...]                     // Actions to execute
+    }
+  }
+}
+```
+
+The WASM function returns the following data structure:
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+            {
+                "state_name": "mint",     // Alias for mint from event
+                "source": "event_data",    // Pull from incoming event
+                "key": "data.mint"         // JSON path to mint field
+            },
+            {
+                "state_name": "token_holders", // Alias for holders snapshot
+                "source": "rocksdb",           // Read from RocksDB
+                "key": "token#h:{mint}"        // Interpolate `mint` into RocksDB key
+            }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
 }
 ```
 
@@ -158,6 +230,62 @@ pub struct TokenTradeStats {
 }
 ```
 
+#### Example Usage:
+
+The following request retrieves 1m/5m/1h/6h/24h stats for the $TRUMP token:
+
+- Token Symbol: $TRUMP
+- Contract Address: 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+        {
+            "state_name": "my_custom_state", // Alias for stats
+            "source": "rocksdb",              // Read from RocksDB
+            "key": "token#s:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Stats by mint
+        }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
+}
+```
+
+The WASM function returns the following data structure:
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+            {
+                "state_name": "mint",     // Alias for mint from event
+                "source": "event_data",    // Use event payload
+                "key": "data.mint"         // JSON path to mint
+            },
+            {
+                "state_name": "token_stats", // Alias for stats record
+                "source": "rocksdb",          // Read from RocksDB
+                "key": "token#s:{mint}"       // Interpolate `mint`
+            }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
+}
+```
+
 ### 1.4 100 first buy txs
 
 - Column family: token
@@ -177,6 +305,62 @@ pub struct FirstBuyTx {
     pub signature: String, // Solana transaction signature
     pub volume: u64,       // SOL volume (amount_in)
     pub timestamp: i64,    // When the trade happened
+}
+```
+
+#### Example Usage:
+
+The following request retrieves up to 100 earliest buy transactions for the $TRUMP token:
+
+- Token Symbol: $TRUMP
+- Contract Address: 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+        {
+            "state_name": "my_custom_state", // Alias for early buyers set
+            "source": "rocksdb",              // Read from RocksDB
+            "key": "token#eb:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Early buyers by mint
+        }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
+}
+```
+
+The WASM function returns the following data structure:
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+            {
+                "state_name": "mint",     // Alias for mint from event
+                "source": "event_data",    // Use event payload
+                "key": "data.mint"         // JSON path to mint
+            },
+            {
+                "state_name": "token_early_buyers", // Alias for early buyers set
+                "source": "rocksdb",                 // Read from RocksDB
+                "key": "token#eb:{mint}"            // Interpolate `mint`
+            }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
 }
 ```
 
@@ -206,6 +390,61 @@ pub struct CreatorTokenStats {
 
     pub tokens_with_mc_over_10m: Vec<String>,    // tokens with market cap > 10M
     pub tokens_with_mc_10m_count: usize,         // count for > 10M
+}
+```
+
+#### Example Usage:
+
+The following request retrieves aggregated stats for a creator address:
+
+- Creator Address: 3f3YEGW9Qyq4h8AxhV24o3t8xPzYz1w6o7wH7kHcCrea
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+        {
+            "state_name": "my_custom_state", // Alias for creator stats
+            "source": "rocksdb",              // Read from RocksDB
+            "key": "creator#c:3f3YEGW9Qyq4h8AxhV24o3t8xPzYz1w6o7wH7kHcCrea" // Creator stats by pubkey
+        }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
+}
+```
+
+The WASM function returns the following data structure:
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+            {
+                "state_name": "pubkey",    // Alias for creator public key
+                "source": "event_data",    // Use event payload
+                "key": "data.pubkey"       // JSON path to public key
+            },
+            {
+                "state_name": "creator_stats", // Alias for creator stats record
+                "source": "rocksdb",           // Read from RocksDB
+                "key": "creator#c:{pubkey}"    // Interpolate `pubkey`
+            }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
 }
 ```
 
@@ -242,5 +481,60 @@ pub struct TraderActivityEvent {
     pub is_buy: bool,        // true if buy, false if sell
     pub amount_in: u64,      // input amount
     pub amount_out: u64,     // output amount
+}
+```
+
+#### Example Usage:
+
+The following request retrieves trader profile and recent activities:
+
+- Trader Address: 8h1TrDRP5pTQ1mKq8iXK7H2jvQvRk2m6sDfN9TrAdEr
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+        {
+            "state_name": "my_custom_state", // Alias for trader state
+            "source": "rocksdb",              // Read from RocksDB
+            "key": "trader#t:8h1TrDRP5pTQ1mKq8iXK7H2jvQvRk2m6sDfN9TrAdEr" // Trader by pubkey
+        }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
+}
+```
+
+The WASM function returns the following data structure:
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Name
+      "description": "string (required)", // Description
+      "state": [                           // States
+            {
+                "state_name": "pubkey",    // Alias for trader public key
+                "source": "event_data",    // Use event payload
+                "key": "data.pubkey"       // JSON path to public key
+            },
+            {
+                "state_name": "trader_state", // Alias for trader state record
+                "source": "rocksdb",           // Read from RocksDB
+                "key": "trader#t:{pubkey}"     // Interpolate `pubkey`
+            }
+      ],
+      "topic_subscription": {},            // TopicSubscription
+      "conditions": [...],                 // ConditionGroup[]
+      "actions": [...]                     // Action[]
+    }
+  }
 }
 ```
