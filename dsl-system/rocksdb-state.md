@@ -62,9 +62,22 @@ The following request retrieves data for the $TRUMP token:
 
 ```json
 {
-  "state_name": "my_custom_state",
-  "source": "rocksdb", 
-  "key": "token.t:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+  "stream_definition": {
+    {
+      "name": "string (required)",
+      "description": "string (required)",
+      "state": [
+        {
+            "state_name": "my_custom_state",
+            "source": "rocksdb", 
+            "key": "token.t:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+        }
+      ],
+      "topic_subscription": {}, // TopicSubscription
+      "conditions": [...], // ConditionGroup
+      "actions": [...] // Action[]
+    }
+  }
 }
 ```
 
