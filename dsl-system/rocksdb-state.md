@@ -1,12 +1,5 @@
 # RocksDB State
 
-This document describes how data is organized and stored in RocksDB for fast retrieval by services and the UI. Each section lists the column family, key format, Rust models, and plain-language explanations of the fields.
-
-Notes
-
-- Amount, price, liquidity, and volume fields are numeric. Consumers should treat units consistently with the ingestion pipeline (commonly SOL-denominated values; use your pipeline’s unit conversions as needed).
-- Unless stated, IDs are deterministic keys used to fetch a single record.
-
 ## 1. Token
 
 ### 1.1 Token info
@@ -59,6 +52,30 @@ pub struct PoolInfo {
     pub pool_wsol_account: String,// WSOL account for the pool
 }
 ```
+
+#### Example Usage:
+
+The following request retrieves data for the $TRUMP token:
+
+- Token Symbol: $TRUMP
+- Contract Address: 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN
+
+```json
+{
+  "state_name": "my_custom_state",
+  "source": "rocksdb", 
+  "key": "token.t:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+}
+```
+
+The WASM function returns the following data structure:
+
+```json
+{
+  "state_name": "historical_data",
+  "source": "rocksdb", 
+  "key": "column_family.key_name"
+}
 
 ### 1.2 Holders
 
@@ -201,7 +218,7 @@ pub struct Trader {
     pub total_volume: u64,                  // cumulative traded volume
     pub total_trades: u64,                  // cumulative number of trades
 
-	  pub activity: VecDeque<TraderActivityEvent>, // last 20 buy/sell activity
+	pub activity: VecDeque<TraderActivityEvent>, // last 20 buy/sell activity
 }
 
 pub struct TraderActivityEvent {
