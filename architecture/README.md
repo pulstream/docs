@@ -1,4 +1,4 @@
-```mermaid
+{% mermaid %}
 graph TB
     Solana[Solana blockchain]
     
@@ -16,4 +16,4 @@ graph TB
     Signals --> SignalDistribution
     FS <--> UI
     SignalDistribution --> UI
-```
+{% endmermaid %}
