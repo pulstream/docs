@@ -131,14 +131,51 @@ To resolve dynamic keys (like `mint`) from incoming events and then fetch the co
         "source": "event_data",                   // Use event payload from WASM topics
         "key": "mint"                        // JSON path to the mint field in event data
       },
+        {
+        "state_name": "holder_after",                     // Alias for the event-derived mint value
+        "source": "event_data",                   // Use event payload from WASM topics
+        "key": "after"                        // JSON path to the mint field in event data
+      },
       {
         "state_name": "token_state",              // Alias for the fetched token state
         "source": "rocksdb",                      // Source from RocksDB
         "key": "token#t:{mint}"                   // Interpolate the above `mint` into the RocksDB key
+      },
+      {
+        "state_name": "total_supply",
+        "source": "data_state",
+        "key": "token_state.total_supply"
+      },
+      {
+        "state_name": "total_supply",
+        "source": "data_state",
+        "key": "token_state.total_supply"
+      },
+      {
+        "state_name": "bonding_progress",
+        "source": "data_state",
+        "key": "token_state.bonding_progress"
       }
     ],
-    "topic_subscription": {},                      // TopicSubscription configuration
-    "conditions": [...],                           // ConditionGroup[]
+    "topic_subscriptions": {
+      "topic": "wasm.token.holder-pulse"
+    },
+
+    "conditions": {
+      "type": "all",
+      "rules": [
+        {
+          "field": "bonding_progress",
+          "operator": "greater_than",
+          "value": 60
+        },
+        {
+          "field": "holder_after",
+          "operator": "greater_than",
+          "value": 4
+        },
+      ]
+    },                     // ConditionGroup[]
     "actions": [...]                               // Action[]
   }
 }
