@@ -29,11 +29,11 @@ Load data from various sources.
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `state_name` | string | ✅ | Variable name to use in conditions |
-| `source` | enum | ✅ | Data source: `rocksdb`, `main_topic` |
-| `key` | string | ✅ | Key/path to retrieve data, separate with "." |
+| Field        | Type   | Required | Description                                  |
+| ------------ | ------ | -------- | -------------------------------------------- |
+| `state_name` | string | ✅       | Variable name to use in conditions           |
+| `source`     | enum   | ✅       | Data source: `rocksdb`, `main_topic`         |
+| `key`        | string | ✅       | Key/path to retrieve data, separate with "." |
 
 #### **RocksDB state**
 
@@ -42,7 +42,7 @@ Load data from various sources.
 ```json
 {
   "state_name": "historical_data",
-  "source": "rocksdb", 
+  "source": "rocksdb",
   "key": "column_family.key_name"
 }
 ```
@@ -53,9 +53,9 @@ Load data from various sources.
 
 ```json
 {
-  "state_name": "trade_amount",
-  "source": "main_topic",
-  "key": "data.amount"
+  "state_name": "amount",
+  "source": "event_data",
+  "key": "amount"
 }
 ```
 
@@ -67,13 +67,13 @@ Define which topic to listen to.
 
 ```json
 {
-  "topic": "string (required)",
+  "topic": "string (required)"
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `topic` | string | ✅ | Redpanda topic name |
+| Field   | Type   | Required | Description         |
+| ------- | ------ | -------- | ------------------- |
+| `topic` | string | ✅       | Redpanda topic name |
 
 ## 🎯 Conditions
 
@@ -88,10 +88,10 @@ Define when the rule should trigger.
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | enum | ✅ | `all` (AND) or `any` (OR) |
-| `rules` | array | ✅ | Array of conditions |
+| Field   | Type  | Required | Description               |
+| ------- | ----- | -------- | ------------------------- |
+| `type`  | enum  | ✅       | `all` (AND) or `any` (OR) |
+| `rules` | array | ✅       | Array of conditions       |
 
 ### **Condition Schema**
 
@@ -103,15 +103,16 @@ Define when the rule should trigger.
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `state_calculation` | string | ✅ | Math expression of state in [State configuration](#-state-configuration)|
-| `operator` | enum | ✅ | Comparison operator |
-| `value` | any | ✅ | Value to compare against |
+| Field               | Type   | Required | Description                                                              |
+| ------------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| `state_calculation` | string | ✅       | Math expression of state in [State configuration](#-state-configuration) |
+| `operator`          | enum   | ✅       | Comparison operator                                                      |
+| `value`             | any    | ✅       | Value to compare against                                                 |
 
 ### **Supported Operators**
 
 #### **Comparison operators**
+
 - `equals` - Exact match
 - `greater_than` - Numeric >
 - `less_than` - Numeric <
@@ -119,6 +120,7 @@ Define when the rule should trigger.
 - `less_than_or_equal` - Numeric <=
 
 #### **String operators**
+
 - `contains` - String contains substring
 - `not_contains` - String does not contain
 - `starts_with` - String starts with
@@ -135,6 +137,7 @@ Define when the rule should trigger.
 ```
 
 **Supported Operations:**
+
 - Arithmetic: `+`, `-`, `*`, `/`, `%`
 - Parentheses: `(`, `)`
 - Scientific notation: `1.23e-8`
@@ -153,10 +156,10 @@ Define what to do when conditions are met.
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `action_type` | enum | ✅ | Action type: `push_signal`, `save_state`, etc. |
-| `data` | object | ✅ | Action-specific configuration |
+| Field         | Type   | Required | Description                                    |
+| ------------- | ------ | -------- | ---------------------------------------------- |
+| `action_type` | enum   | ✅       | Action type: `push_signal`, `save_state`, etc. |
+| `data`        | object | ✅       | Action-specific configuration                  |
 
 ### **Push signal action**
 
@@ -170,6 +173,7 @@ Define what to do when conditions are met.
 #### **SignalData Configuration**
 
 **Token Signal:**
+
 ```json
 {
   "action_type": "push_signal",
@@ -181,6 +185,7 @@ Define what to do when conditions are met.
 ```
 
 **Signer Signal:**
+
 ```json
 {
   "action_type": "push_signal",
@@ -192,6 +197,7 @@ Define what to do when conditions are met.
 ```
 
 **Transaction Signal:**
+
 ```json
 {
   "action_type": "push_signal",
@@ -204,4 +210,3 @@ Define what to do when conditions are met.
   }
 }
 ```
-
