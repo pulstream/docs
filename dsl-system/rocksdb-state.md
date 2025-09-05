@@ -129,7 +129,7 @@ To resolve dynamic keys (like `mint`) from incoming events and then fetch the co
       {
         "state_name": "mint",                     // Alias for the event-derived mint value
         "source": "event_data",                   // Use event payload from WASM topics
-        "key": "data.mint"                        // JSON path to the mint field in event data
+        "key": "mint"                        // JSON path to the mint field in event data
       },
       {
         "state_name": "token_state",              // Alias for the fetched token state
@@ -218,7 +218,7 @@ Use event payload to derive `mint` and interpolate it in the RocksDB key. See To
             {
                 "state_name": "mint",     // Alias for mint from event
                 "source": "event_data",    // Pull from incoming event
-                "key": "data.mint"         // JSON path to mint field
+                "key": "mint"         // JSON path to mint field
             },
             {
                 "state_name": "token_holders", // Alias for holders snapshot
@@ -370,7 +370,7 @@ Use event payload to derive `mint` and interpolate it in the RocksDB key. See To
             {
                 "state_name": "mint",     // Alias for mint from event
                 "source": "event_data",    // Use event payload
-                "key": "data.mint"         // JSON path to mint
+                "key": "mint"         // JSON path to mint
             },
             {
                 "state_name": "token_stats", // Alias for stats record
@@ -477,7 +477,7 @@ Use event payload to derive `mint` and interpolate it in the RocksDB key. See To
             {
                 "state_name": "mint",     // Alias for mint from event
                 "source": "event_data",    // Use event payload
-                "key": "data.mint"         // JSON path to mint
+                "key": "mint"         // JSON path to mint
             },
             {
                 "state_name": "token_early_buyers", // Alias for early buyers set
@@ -590,7 +590,7 @@ Use event payload to derive `pubkey` and interpolate it in the RocksDB key. See 
             {
                 "state_name": "pubkey",    // Alias for creator public key
                 "source": "event_data",    // Use event payload
-                "key": "data.pubkey"       // JSON path to public key
+                "key": "pubkey"       // JSON path to public key
             },
             {
                 "state_name": "creator_stats", // Alias for creator stats record
@@ -730,7 +730,7 @@ Use event payload to derive `pubkey` and interpolate it in the RocksDB key. See 
             {
                 "state_name": "pubkey",    // Alias for trader public key
                 "source": "event_data",    // Use event payload
-                "key": "data.pubkey"       // JSON path to public key
+                "key": "pubkey"       // JSON path to public key
             },
             {
                 "state_name": "trader_state", // Alias for trader state record

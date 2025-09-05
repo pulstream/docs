@@ -30,14 +30,14 @@ This section summarizes what each topic does and when it emits. Values and schem
 
 ```rust
 struct Message {
-  ts: u64,                 // timestamp
-  type: "holder_pulse",   // common format
-  data: {
-    mint: String,
-    slots: (u64, u64),
-    after: usize,
-    before: usize,
-  }
+  _meta: {
+    ts: u64,               // timestamp
+    type: "holder_pulse", // common format
+  },
+  mint: String,
+  slots: (u64, u64),
+  after: usize,
+  before: usize,
 }
 ```
 
@@ -50,14 +50,14 @@ struct Message {
 
 ```rust
 struct Message {
-  ts: u64,                   // timestamp
-  type: "liquidity_pulse",  // common format
-  data: {
-    mint: String,
-    slots: (u64, u64),
-    after: usize,
-    before: usize,
-  }
+  _meta: {
+    ts: u64,                   // timestamp
+    type: "liquidity_pulse",  // common format
+  },
+  mint: String,
+  slots: (u64, u64),
+  after: usize,
+  before: usize,
 }
 ```
 
@@ -69,16 +69,16 @@ struct Message {
 
 ```rust
 struct Message {
-  ts: u64,
-  type: "trade_in_slot", // common format
-  data: {
-    mint: String,
-    count: u64,
-    total_volume: f64,       // total SOL volume in slot
-    last_updated_slot: u64,
-    signature_logs: Vec<SignatureLog>,
-    bonded: bool,            // token migrated / not migrated
-  }
+  _meta: {
+    ts: u64,
+    type: "trade_in_slot", // common format
+  },
+  mint: String,
+  count: u64,
+  total_volume: f64,       // total SOL volume in slot
+  last_updated_slot: u64,
+  signature_logs: Vec<SignatureLog>,
+  bonded: bool,            // token migrated / not migrated
 }
 
 pub struct SignatureLog {
@@ -100,18 +100,18 @@ pub struct SignatureLog {
 
 ```rust
 struct Message {
-  ts: u64,              // timestamp
-  type: "trade",        // common format
-  data: {
-    signature: String,
-    mint: String,
-    payer: String,
-    timestamp: i64,
-    slot: u64,
-    amount_in: f64,
-    amount_out: f64,
-    is_buy: bool,
-  }
+  _meta: {
+    ts: u64,              // timestamp
+    type: "trade",        // common format
+  },
+  signature: String,
+  mint: String,
+  payer: String,
+  timestamp: i64,
+  slot: u64,
+  amount_in: f64,
+  amount_out: f64,
+  is_buy: bool,
 }
 ```
 
@@ -122,8 +122,11 @@ struct Message {
 
 ```rust
 struct Message {
+  _meta: {
+    ts: i64,
+    type: "just_funded",  // common format
+  },
   recipient: String,
-  ts: i64,
   amt_sol: f64,                  // total sol
   details: HashMap<String, f64>, // payer -> amount sol
   payers: Vec<String>,           // list of payers
@@ -142,18 +145,18 @@ struct Message {
 
 ```rust
 struct Message {
-  ts: u64,              // timestamp
-  type: "create",       // common format
-  data: {
-    mint: String,
-    name: String,
-    symbol: String,
-    uri: String,
-    creator: String,
-    creation_time: i64,
-    total_supply: f64,
-    decimals: u8,
-  }
+  _meta: {
+    ts: u64,              // timestamp
+    type: "create",       // common format
+  },
+  mint: String,
+  name: String,
+  symbol: String,
+  uri: String,
+  creator: String,
+  creation_time: i64,
+  total_supply: f64,
+  decimals: u8,
 }
 ```
 
@@ -164,25 +167,25 @@ struct Message {
 
 ```rust
 struct Message {
-  ts: u64,              // timestamp
-  type: "completed",    // common format
-  data: {
-    mint: String,
-    name: String,
-    symbol: String,
-    uri: String,
-    creator: String,
-    creation_time: i64,
-    creation_slot: u64,
-    total_supply: f64,
-    decimals: u8,
-    price: f64,
-    market_cap: f64,
-    liquidity: f64,
-    token_liquidity: f64,
-    migrated_at: Option<i64>,
-    holders_count: usize,
-  }
+  _meta: {
+    ts: u64,              // timestamp
+    type: "completed",    // common format
+  },
+  mint: String,
+  name: String,
+  symbol: String,
+  uri: String,
+  creator: String,
+  creation_time: i64,
+  creation_slot: u64,
+  total_supply: f64,
+  decimals: u8,
+  price: f64,
+  market_cap: f64,
+  liquidity: f64,
+  token_liquidity: f64,
+  migrated_at: Option<i64>,
+  holders_count: usize,
 }
 ```
 
@@ -195,27 +198,27 @@ struct Message {
 
 ```rust
 struct Message {
-  ts: u64,                 // timestamp
-  type: "token_state_changed", // common format
-  data: {
-    mint: String,
-    last_updated_slot: u64,
-    total_supply: f64,
-    price: f64,
-    liquidity: f64,
-    token_liquidity: f64,
-    market_cap: f64,
-    bonding_progress: f64,
-    migrated: bool,
-    migrated_at: Option<i64>,
-    holders_count: usize,
-    trades: u64,                // total trades (buys/sells)
-    half_sol_trades: u64,       // total trades > 0.5 SOL
-    top10_holder_percent: f64,  // top 10 holders percentage
-    top100_holder_percent: f64, // top 100 holders percentage
-    creator_tokens_created: usize,
-    creator_tokens_migrated: usize,
-  }
+  _meta: {
+    ts: u64,                 // timestamp
+    type: "token_state_changed", // common format
+  },
+  mint: String,
+  last_updated_slot: u64,
+  total_supply: f64,
+  price: f64,
+  liquidity: f64,
+  token_liquidity: f64,
+  market_cap: f64,
+  bonding_progress: f64,
+  migrated: bool,
+  migrated_at: Option<i64>,
+  holders_count: usize,
+  trades: u64,                // total trades (buys/sells)
+  half_sol_trades: u64,       // total trades > 0.5 SOL
+  top10_holder_percent: f64,  // top 10 holders percentage
+  top100_holder_percent: f64, // top 100 holders percentage
+  creator_tokens_created: usize,
+  creator_tokens_migrated: usize,
 }
 ```
 
