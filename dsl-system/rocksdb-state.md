@@ -53,7 +53,7 @@ pub struct PoolInfo {
 }
 ```
 
-#### Example 1:
+#### 1.1.1 Example: Simple
 
 The following request retrieves data for the $TRUMP token:
 
@@ -116,7 +116,7 @@ This is an example response object. Values are illustrative (not live).
 }
 ```
 
-#### Example 2: Combining event topics and token state
+#### 1.1.2 Example: Combining event topics and token state
 
 To resolve dynamic keys (like `mint`) from incoming events and then fetch the corresponding token state from RocksDB, use a two-step state definition: first derive `mint` from event payload, then interpolate it in the RocksDB key. See Topics specification for event schemas in `dsl-system/main-topics.md`.
 
@@ -143,17 +143,17 @@ To resolve dynamic keys (like `mint`) from incoming events and then fetch the co
       },
       {
         "state_name": "total_supply",
-        "source": "data_state",
+        "source": "state_data",
         "key": "token_state.total_supply"
       },
       {
         "state_name": "total_supply",
-        "source": "data_state",
+        "source": "state_data",
         "key": "token_state.total_supply"
       },
       {
         "state_name": "bonding_progress",
-        "source": "data_state",
+        "source": "state_data",
         "key": "token_state.bonding_progress"
       }
     ],
@@ -181,6 +181,8 @@ To resolve dynamic keys (like `mint`) from incoming events and then fetch the co
 }
 ```
 
+Explanation: This rule triggers only for tokens with bonding_progress > 60 (near/after bonding completion) and a post-window holder count greater than 4. The holder_after state is mapped from the holder-pulse event’s after field (holder count after the 2-slot window), while bonding_progress is read from token_state in RocksDB.
+
 ### 1.2 Holders
 
 - Column family: token
@@ -196,7 +198,7 @@ pub struct TokenHolders {
 }
 ```
 
-#### Example 1:
+#### 1. Example:
 
 The following request retrieves top holders for the $TRUMP token:
 
