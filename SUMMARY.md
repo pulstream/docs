@@ -8,7 +8,7 @@
 
 ## 🏗️ Architecture
 
-* [System Overview](architecture/README.md)
+* [System Overview](architecture/overview.md)
 * [Data Flow Pipeline](architecture/data-flow.md)
 * [🔄 Carbon Router](architecture/carbon-router.md)
   * [Yellowstone Integration](architecture/yellowstone.md)
