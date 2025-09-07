@@ -30,7 +30,7 @@ Pulstream consists of four main components:
 * **Function server** - Manages function deployment via REST API
 * **Signal distribution** - Delivers signals to consumers
 
-[Learn more about the architecture →](architecture/README.md)
+[Learn more about the architecture →](./architecture/overview.md)
 
 ## 📚 Documentation overview
 
