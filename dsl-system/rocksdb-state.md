@@ -18,6 +18,7 @@ pub struct Token {
     pub symbol: String,               // token ticker symbol
     pub uri: String,                  // metadata URI
     pub creator: Pubkey,              // on-chain creator address
+    pub creator_balance: f64,         // creator sol balance
     pub creation_time: i64,           // unix timestamp when created
     pub creation_slot: u64,           // slot when created
     pub total_supply: u64,            // total minted supply (raw units, consider decimals)

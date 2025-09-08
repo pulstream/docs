@@ -29,11 +29,11 @@ Load data from various sources.
 }
 ```
 
-| Field        | Type   | Required | Description                                  |
-| ------------ | ------ | -------- | -------------------------------------------- |
-| `state_name` | string | ✅       | Variable name to use in conditions           |
-| `source`     | enum   | ✅       | Data source: `rocksdb`, `main_topic`         |
-| `key`        | string | ✅       | Key/path to retrieve data, separate with "." |
+| Field        | Type   | Required | Description                                        |
+| ------------ | ------ | -------- | -------------------------------------------------- |
+| `state_name` | string | ✅       | Variable name to use in conditions                 |
+| `source`     | enum   | ✅       | Data source: `rocksdb`, `main_topic`, `state_data` |
+| `key`        | string | ✅       | Key/path to retrieve data, separate with "."       |
 
 #### **RocksDB state**
 
@@ -43,7 +43,7 @@ Load data from various sources.
 {
   "state_name": "historical_data",
   "source": "rocksdb",
-  "key": "column_family.key_name"
+  "key": "column_family#key_name"
 }
 ```
 
@@ -57,6 +57,33 @@ Load data from various sources.
   "source": "event_data",
   "key": "amount"
 }
+```
+
+#### **State data**
+
+```
+ "state": [
+      {
+        "state_name": "mint",
+        "source": "event_data",
+        "key": "mint"
+      },
+      {
+        "state_name": "token_state",
+        "source": "rocksdb",
+        "key": "token#t:{mint}"
+      },
+      {
+        "state_name": "total_supply",
+        "source": "state_data",
+        "key": "token_state.total_supply" // value loaded from token_state, which is persisted in RocksDB
+      },
+      {
+        "state_name": "bonding_progress",
+        "source": "state_data",
+        "key": "token_state.bonding_progress" // value loaded from token_state, which is persisted in RocksDB
+      }
+  ]
 ```
 
 ## 📡 Topic subscriptions

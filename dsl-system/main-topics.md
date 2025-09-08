@@ -154,6 +154,8 @@ struct Message {
   symbol: String,
   uri: String,
   creator: String,
+  creator_balance: f64, // creator sol balance
+  tokens_migrated_count: usize, // Count of migrated tokens assigned to the creator
   creation_time: i64,
   total_supply: f64,
   decimals: u8,
