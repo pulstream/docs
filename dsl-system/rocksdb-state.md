@@ -21,11 +21,14 @@ pub struct Token {
     pub creator_balance: f64,         // creator sol balance
     pub creation_time: i64,           // unix timestamp when created
     pub creation_slot: u64,           // slot when created
-    pub total_supply: u64,            // total minted supply (raw units, consider decimals)
+    pub total_supply: f64,            // total minted supply (raw units, consider decimals)
     pub decimals: u8,                 // number of decimal places
-    pub price: u64,                   // current price per token (unit per ingestion pipeline)
-    pub liquidity: u64,               // current liquidity
-    pub market_cap: u64,              // price × supply (pipeline-computed)
+    pub price: f64,                   // current price per token (unit per ingestion pipeline)
+    pub liquidity: f64,               // current liquidity
+    pub peak_liquidity: f64,          // ath liquidity
+    pub peak_liq_ts: Option<i64>,     // ath liquidity timestamp
+
+    pub market_cap: f64,              // price × supply (pipeline-computed)
     pub bonding_progress: f64,        // progress along bonding curve (0–1)
     pub curve_type: u8,               // encoded bonding curve type id
 
@@ -100,6 +103,8 @@ This is an example response object. Values are illustrative (not live).
   "init_sol_liq": 0.0151156,
   "init_token_liq": 1000000000,
   "liquidity": 0.017251154,
+  "peak_liquidity": 10,
+  "peak_liq_ts": 1756810830,
   "market_cap": 27.99115770937219,
   "migrated": false,
   "migrated_at": null,
