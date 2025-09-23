@@ -1,16 +1,10 @@
-# Quick Start
-
-## Token Snipe  
-
 **What we do:**  
 - Create a stream to track if a token named **PUMP** is created on Pumpfun.  
 - Send a Telegram alert.  
 
-## Steps  
-
 ### Step 1: Create a stream using JSON DSL  
-
-### Step 2: Paste the code  
+- Go to Pulstream, and login using wallet
+- Paste the code
 
 ```json
 {
@@ -67,11 +61,11 @@
 }
 ```
 
-### Step 3: Deploy stream
+- Deploy stream
 
 ![First stream](./first_stream.png)
 
-### Step 4: Create a Telegram bot and add it to a public channel
+### Step 2: Create a Telegram bot and add it to a public channel
 
 **Create a Telegram bot**
 

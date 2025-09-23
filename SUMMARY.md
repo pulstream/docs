@@ -2,9 +2,9 @@
 
 * [🏠 Introduction](README.md)
 
-## 🚀 Getting started                            
-* [Quickstart (5 min)](getting-started/quickstart.md)
-* [Complete tutorial](getting-started/tutorial.md)
+## 🚀 Examples in Action                            
+* [Token Snipe](examples/token-snipe.md)
+* [Complete tutorial](examples/tutorial.md)
 
 ## 🏗️ Architecture
 

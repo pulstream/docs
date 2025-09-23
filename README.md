@@ -42,7 +42,7 @@ Pulstream consists of four main components:
 | [💻 Development](development/README.md) | Building and testing streams |
 | [💰 Monetization](monetization/README.md) | Earn from your streams |
 
-## ⚡ Quick start
+## ⚡ Real use
 
 Ready to build your first stream? Get started in just 5 minutes!
 
