@@ -71,4 +71,38 @@
 
 ![First stream](./first_stream.png)
 
-### Step 4: Create telegram alert
+### Step 4: Create a Telegram bot and add it to a public channel
+
+**Create a Telegram bot**
+
+- Open a chat with **[@BotFather](https://t.me/BotFather)**  
+- Use the `/newbot` command to create a new bot  
+- Once created, **copy the bot token** provided  
+
+![Create bot](./create_bot.png)
+
+**Add the bot to a public channel**
+
+- Create or open the public channel you want to use  
+- Go to **Channel Info → Administrators → Add Admin**  
+- Search for your bot by its username (e.g., `@your_bot`)  
+- Add the bot as an administrator and grant it the necessary permissions
+
+![Create channel](./create_public_channel.png)
+
+**Alert configuration**
+
+- Use the **bot token** and **public channel ID** from the previous step to configure the alert.  
+- Define the **Telegram message template** with placeholders for dynamic fields (e.g., `{mint}`, `{name}`, `{symbol}`).
+
+Example:
+```
+🚀 New BUY Signal 🚀
+💎 Token: {mint}
+📛 Name: {name}
+🔤 Symbol: {symbol}
+👤 Creator: {creator}
+🕒 Created at: {creation_time}
+```
+
+![Create alert](./alert.png)
