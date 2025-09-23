@@ -4,7 +4,8 @@
 
 ### Step 1: Create a stream using JSON DSL  
 - Go to Pulstream, and login using wallet
-- Paste the code
+- Create a new stream
+- Paste the JSON code to playground
 
 ```json
 {
