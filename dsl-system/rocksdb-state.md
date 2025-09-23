@@ -31,7 +31,7 @@ pub struct Token {
     pub peak_price: f64,                // ath price
     pub peak_price_ts: Option<i64>,     // ath price timestamp
 
-    pub market_cap: f64,              // price × supply (pipeline-computed)
+    pub market_cap: f64,              // Market cap expressed in SOL
     pub bonding_progress: f64,        // progress along bonding curve (0–1)
     pub curve_type: u8,               // encoded bonding curve type id
 
