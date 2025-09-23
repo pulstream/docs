@@ -9,9 +9,7 @@
 
 ```json
 {
-  "topic_subscriptions": {
-    "topic": "wasm.launchpad.pumpfun.created"
-  },
+  "topic_subscription": "wasm.launchpad.pumpfun.created",
   "state": [
     {
       "state_name": "mint",
