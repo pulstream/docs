@@ -28,6 +28,9 @@ pub struct Token {
     pub peak_liquidity: f64,          // ath liquidity
     pub peak_liq_ts: Option<i64>,     // ath liquidity timestamp
 
+    pub peak_price: f64,                // ath price
+    pub peak_price_ts: Option<i64>,     // ath price timestamp
+
     pub market_cap: f64,              // price × supply (pipeline-computed)
     pub bonding_progress: f64,        // progress along bonding curve (0–1)
     pub curve_type: u8,               // encoded bonding curve type id
@@ -281,7 +284,7 @@ Use event payload to derive `mint` and interpolate it in the RocksDB key. See To
 
 ### 1.3 Stats
 
-- Column family: token
+- Column family: token_stats
 - Query key: `s:{mint}`
 
 ```rust
@@ -420,7 +423,7 @@ Use event payload to derive `mint` and interpolate it in the RocksDB key. See To
             {
                 "state_name": "token_stats", // Alias for stats record
                 "source": "rocksdb",          // Read from RocksDB
-                "key": "token#s:{mint}"       // Interpolate `mint`
+                "key": "token_stats#s:{mint}"       // Interpolate `mint`
             }
       ],
       "topic_subscription": {},            // TopicSubscription
@@ -470,7 +473,7 @@ The following request retrieves up to 100 earliest buy transactions for the $TRU
         {
             "state_name": "my_custom_state", // Alias for early buyers set
             "source": "rocksdb",              // Read from RocksDB
-            "key": "token#eb:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Early buyers by mint
+            "key": "token_stats#eb:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Early buyers by mint
         }
       ],
       "topic_subscription": {},            // TopicSubscription
