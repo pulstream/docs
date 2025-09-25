@@ -35,6 +35,9 @@ pub struct Token {
     pub bonding_progress: f64,        // progress along bonding curve (0–1)
     pub curve_type: u8,               // encoded bonding curve type id
 
+    pub top10_holder_percent: f64,    // Top 10 holder % of total supply; exclude system/pool addresses
+    pub top100_holder_percent: f64,   // Top 100 holder % of total supply; include all addresses
+
     // Migration
     pub migrated: bool,               // whether token migrated to DEX pool
     pub migrated_at: Option<i64>,     // unix timestamp when migration happened
