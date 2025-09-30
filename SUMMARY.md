@@ -4,7 +4,7 @@
 
 ## 🚀 Examples in Action                            
 * [Token Snipe](examples/token-snipe.md)
-* [Complete tutorial](examples/tutorial.md)
+* [Liquidity track](examples/liquidity-track.md)
 
 <!-- ## 🏗️ Architecture
 

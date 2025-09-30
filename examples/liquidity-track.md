@@ -46,17 +46,15 @@
     "type": "all",
     "rules": [
       {
-        "field": "name",
+        "field": "creator",
         "operator": "equal",
-        "value": "PUMP"
+        "value": "9k8jWWqfmTTXrc8gmZqYVxSFJhygURvyVRztivJXFTYP"
       },
-      {
-        "field": "creator_balance",
-        "operator": "greater_than",
-        "value": 1
-      }
     ]
   }
 }
 ```
 
+### Step 2: Create a Telegram bot and add it to a public channel
+
+[See how to create a Telegram bot and add it to a public channel](./token-snipe.md)
