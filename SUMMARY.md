@@ -24,7 +24,7 @@
 * [🗄️ Rocksdb states](dsl-system/rocksdb-state.md)
 * [📨 Main topics](dsl-system/main-topics.md)
 
-## Development
+<!-- ## Development
 
 * [💻 Building Streams](development/README.md)
 * [🧪 Testing](testing/README.md)
@@ -32,4 +32,4 @@
 
 ## Advanced
 
-* [💰 Stream monetization](monetization/README.md)
+* [💰 Stream monetization](monetization/README.md) -->
