@@ -6,7 +6,7 @@
 * [Token Snipe](examples/token-snipe.md)
 * [Complete tutorial](examples/tutorial.md)
 
-## 🏗️ Architecture
+<!-- ## 🏗️ Architecture
 
 * [Architecture Overview](architecture/overview.md)
 * [Data Flow Pipeline](architecture/data-flow.md)
@@ -17,7 +17,7 @@
 * [⚙️ Runtime Engine](architecture/runtime.md)
   * [WASM Execution](architecture/wasm.md)
   * [Function Lifecycle](architecture/lifecycle.md)
-  * [Performance](architecture/performance.md)
+  * [Performance](architecture/performance.md) -->
 
 ## DSL system
 * [📋 DSL structure](dsl-system/structure.md)
