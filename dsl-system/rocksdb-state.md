@@ -544,6 +544,153 @@ Use event payload to derive `mint` and interpolate it in the RocksDB key. See To
 }
 ```
 
+### 1.5 Holders Analytics
+
+- Column family: holders_analytics
+- Query key: `ha:{mint}`
+- Note: Metrics are computed from the top 20 largest holders (by token balance)
+
+```rust
+#[cf = "holders_analytics"]
+pub struct HoldersAnalyticsModel {
+    pub id: String,                    // record id (typically mint)
+    pub mint: String,                  // token mint address
+    pub slot: u64,                     // slot when this analytics snapshot was taken
+    pub pct_fresh: f64,                // percentage of fresh holders (new/inexperienced)
+    pub pct_bot: f64,                  // percentage of bot holders (automated accounts)
+    pub pct_fish: f64,                 // percentage of fish holders (small retail)
+    pub pct_shrimp: f64,               // percentage of shrimp holders (very small retail)
+    pub pct_shark: f64,                // percentage of shark holders (medium-sized traders)
+    pub pct_whale: f64,                // percentage of whale holders (large traders)
+    pub count_fresh: u64,              // absolute count of fresh holders
+    pub count_bot: u64,                // absolute count of bot holders
+    pub count_fish: u64,               // absolute count of fish holders
+    pub count_shrimp: u64,             // absolute count of shrimp holders
+    pub count_shark: u64,              // absolute count of shark holders
+    pub count_whale: u64,              // absolute count of whale holders
+    pub supply_pct_fresh: f64,         // percentage of total supply held by fresh holders
+    pub supply_pct_bot: f64,           // percentage of total supply held by bot holders
+    pub supply_pct_fish: f64,          // percentage of total supply held by fish holders
+    pub supply_pct_shrimp: f64,        // percentage of total supply held by shrimp holders
+    pub supply_pct_shark: f64,         // percentage of total supply held by shark holders
+    pub supply_pct_whale: f64,         // percentage of total supply held by whale holders
+}
+
+```
+
+#### 1.5.1 Example: Simple
+
+The following request retrieves holder analytics for the $TRUMP token:
+
+- Token Symbol: $TRUMP
+- Contract Address: 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN
+
+```json
+{
+  "stream_definition": {                    // StreamDefinition
+    {
+      "name": "string (required)",        // Human-readable name
+      "description": "string (required)", // Description of what this stream retrieves
+      "state": [                           // List of state lookups used by the stream
+        {
+            "state_name": "my_custom_state", // Local alias to reference this state in conditions/actions
+            "source": "rocksdb",              // Source type: use RocksDB as the backing store
+            "key": "holders_analytics#ha:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN" // Full RocksDB key to fetch holder analytics
+        }
+      ],
+      "topic_subscription": {},            // TopicSubscription (configure topics to listen to)
+      "conditions": [...],                 // ConditionGroup[] (optional guards/filters)
+      "actions": [...]                     // Action[] (what to execute when conditions pass)
+    }
+  }
+}
+```
+
+The WASM function returns the following data structure:
+This is an example response object. Values are illustrative (not live).
+
+```json
+{
+  "id": "ha:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
+  "mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
+  "slot": 364150769,
+  "pct_fresh": 15.5,
+  "pct_bot": 25.0,
+  "pct_fish": 35.0,
+  "pct_shrimp": 20.0,
+  "pct_shark": 3.5,
+  "pct_whale": 1.0,
+  "count_fresh": 12,
+  "count_bot": 8,
+  "count_fish": 18,
+  "count_shrimp": 10,
+  "count_shark": 2,
+  "count_whale": 1,
+  "supply_pct_fresh": 5.2,
+  "supply_pct_bot": 45.8,
+  "supply_pct_fish": 25.0,
+  "supply_pct_shrimp": 8.5,
+  "supply_pct_shark": 12.0,
+  "supply_pct_whale": 3.5
+}
+```
+
+#### 1.5.2 Example: Combining event topics and holder analytics state
+
+To resolve dynamic keys (like `mint`) from incoming events and then fetch the corresponding holder analytics from RocksDB, use a two-step state definition: first derive `mint` from event payload, then interpolate it in the RocksDB key. See Topics specification for event schemas in `dsl-system/main-topics.md`.
+
+```json
+{
+  "stream_definition": {                         // StreamDefinition
+    "name": "string (required)",                 // Name of the stream
+    "description": "string (required)",          // Description of the stream
+    "state": [                                     // States resolved at runtime
+      {
+        "state_name": "mint",                     // Alias for the event-derived mint value
+        "source": "event_data",                   // Use event payload from WASM topics
+        "key": "mint"                        // JSON path to the mint field in event data
+      },
+      {
+        "state_name": "holder_analytics",         // Alias for the fetched holder analytics state
+        "source": "rocksdb",                      // Source from RocksDB
+        "key": "holders_analytics#ha:{mint}"      // Interpolate the above `mint` into the RocksDB key
+      },
+      {
+        "state_name": "whale_percentage",
+        "source": "state_data",
+        "key": "holder_analytics.pct_whale"
+      },
+      {
+        "state_name": "bot_supply_percentage",
+        "source": "state_data",
+        "key": "holder_analytics.supply_pct_bot"
+      }
+    ],
+    "topic_subscriptions": {
+      "topic": "wasm.token.holder-pulse"
+    },
+    "conditions": {
+      "type": "all",
+      "rules": [
+        {
+          "field": "whale_percentage",
+          "operator": "greater_than",
+          "value": 5.0
+        },
+        {
+          "field": "bot_supply_percentage",
+          "operator": "less_than",
+          "value": 30.0
+        }
+      ]
+    },                     // ConditionGroup[]
+    "actions": [...]                               // Action[]
+  }
+}
+```
+
+Explanation: This rule triggers only for tokens where whale holders represent more than 5% of total holders and bot holders control less than 30% of the total supply. The whale_percentage and bot_supply_percentage states are derived from the holder_analytics state in RocksDB, while the mint is extracted from the holder-pulse event.
+
 ## 2. Creator / Trader
 
 ### 2.1 Creator
