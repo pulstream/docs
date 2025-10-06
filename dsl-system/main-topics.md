@@ -85,8 +85,8 @@ pub struct SignatureLog {
   pub signature: String,         // tx signature
   pub signers: HashSet<String>,  // list of signers
   pub instructions: Vec<String>, // actions in transaction (buy, sell, create)
-  pub buy_amt_sol: f64,          // total buy amount of tx
-  pub sell_amt_sol: f64,         // total sell amount of tx
+  pub buy_amt: f64,          // total buy amount of tx
+  pub sell_amt: f64,         // total sell amount of tx
 }
 ```
 
@@ -174,20 +174,7 @@ struct Message {
     type: "completed",    // common format
   },
   mint: String,
-  name: String,
-  symbol: String,
-  uri: String,
-  creator: String,
-  creation_time: i64,
-  creation_slot: u64,
-  total_supply: f64,
-  decimals: u8,
-  price: f64,
-  market_cap: f64,
-  liquidity: f64,
-  token_liquidity: f64,
   migrated_at: Option<i64>,
-  holders_count: usize,
 }
 ```
 

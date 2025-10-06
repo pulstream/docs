@@ -13,30 +13,44 @@ pub struct Token {
     pub program: String,              // origin program/launchpad or DEX program
     pub signature: String,            // creation transaction signature
     pub mint: String,                 // token mint address
+    pub quote_mint: String,           // quote token mint (e.g., WSOL or USD1)
     pub bonding_curve: Option<String>,// optional bonding curve id/address (pre-migration)
     pub name: String,                 // token display name
     pub symbol: String,               // token ticker symbol
     pub uri: String,                  // metadata URI
-    pub creator: Pubkey,              // on-chain creator address
-    pub creator_balance: f64,         // creator sol balance
+    pub creator: String,              // creator address (string)
+    pub creator_balance: f64,         // creator SOL balance
     pub creation_time: i64,           // unix timestamp when created
     pub creation_slot: u64,           // slot when created
-    pub total_supply: f64,            // total minted supply (raw units, consider decimals)
+    pub total_supply: f64,            // total minted supply (UI units)
     pub decimals: u8,                 // number of decimal places
-    pub price: f64,                   // current price per token (unit per ingestion pipeline)
-    pub liquidity: f64,               // current liquidity
-    pub peak_liquidity: f64,          // ath liquidity
+    pub quote_decimals: u8,           // decimals for quote token (e.g., 9 for WSOL)
+
+    // Prices and liquidities are in QUOTE units; u_* are USD equivalents
+    pub price: f64,                   // price per token in quote units
+    pub u_price: f64,                 // price per token in USD
+    pub market_cap: f64,              // market cap in quote units
+    pub u_market_cap: f64,            // market cap in USD
+    pub liquidity: f64,               // current liquidity (quote units)
+    pub u_liquidity: f64,             // current liquidity (USD)
+    pub token_liquidity: f64,         // token-side liquidity (token units)
+    pub u_token_liquidity: f64,       // token-side liquidity (USD)
+
+    pub peak_liquidity: f64,          // ath liquidity (quote units)
+    pub u_peak_liquidity: f64,        // ath liquidity (USD)
     pub peak_liq_ts: Option<i64>,     // ath liquidity timestamp
+    pub peak_price: f64,              // ath price (quote units)
+    pub u_peak_price: f64,            // ath price (USD)
+    pub peak_price_ts: Option<i64>,   // ath price timestamp
 
-    pub peak_price: f64,                // ath price
-    pub peak_price_ts: Option<i64>,     // ath price timestamp
-
-    pub market_cap: f64,              // Market cap expressed in SOL
-    pub bonding_progress: f64,        // progress along bonding curve (0–1)
+    pub bonding_progress: f64,        // progress along bonding curve (0–100)
     pub curve_type: u8,               // encoded bonding curve type id
 
-    pub top10_holder_percent: f64,    // Top 10 holder % of total supply; exclude system/pool addresses
-    pub top100_holder_percent: f64,   // Top 100 holder % of total supply; include all addresses
+    // Initial reserves at creation (if available)
+    pub init_liq: f64,                // initial quote reserves
+    pub u_init_liq: f64,              // initial quote reserves (USD)
+    pub init_token_liq: f64,          // initial token reserves
+    pub u_init_token_liq: f64,        // initial token reserves (USD)
 
     // Migration
     pub migrated: bool,               // whether token migrated to DEX pool
@@ -45,13 +59,21 @@ pub struct Token {
     // Pool info
     pub pool: Option<PoolInfo>,       // pool details after migration
 
-    #[serde(default)]
+    // Holders
     pub holders_count: usize,         // cached number of unique holders
+    pub top10_holder_percent: f64,    // Top 10 holder % of total supply
+    pub top100_holder_percent: f64,   // Top 100 holder % of total supply
+    pub top_holders: Vec<(String, String)>, // top holders with classification
 
-    #[serde(default)]
+    // Trades
     pub trades: u64,                  // total number of trades observed
-    #[serde(default)]
-    pub half_sol_trades: u64,         // total trades with size ≥ 0.5 SOL
+    pub large_trades: u64,            // large trades (e.g., ≥ threshold)
+
+    // Aggregated fees (in SOL)
+    pub total_fee: f64,
+    pub priority_fee: f64,
+    pub tip_fee: f64,
+    pub trade_fee: f64,
 }
 
 pub struct PoolInfo {
@@ -59,7 +81,7 @@ pub struct PoolInfo {
     pub pool_address: String,     // pool account address
     pub pool_authority: String,   // authority account for the pool
     pub pool_mint_account: String,// token mint account for pool token
-    pub pool_wsol_account: String,// WSOL account for the pool
+    pub pool_quote_account: String,// quote token account for the pool
 }
 ```
 
@@ -205,7 +227,7 @@ pub struct TokenHolders {
     pub id: String,                         // record id (typically mint)
     pub last_updated_slot: u64,             // slot when this snapshot was updated
     pub mint: String,                       // token mint address
-    pub top_holders: HashMap<String, u64>,  // top 100 holders: address -> balance
+    pub top_holders: HashMap<String, f64>,  // top 100 holders: address -> balance (token units)
     pub holders_count: usize,               // total unique holders
 }
 ```
@@ -299,11 +321,11 @@ pub struct TokenTradeStats {
     pub last_updated_timestamp: i64, // unix time of last update
     pub last_updated_slot: u64,      // slot of last update
 
-    pub price_1m: f64,           // price over last 1 minute
-    pub price_5m: f64,           // price over last 5 minutes
-    pub price_1h: f64,           // price over last 1 hour
-    pub price_6h: f64,           // price over last 6 hours
-    pub price_24h: f64,          // price over last 24 hours
+    pub price_1m: f64,           // price over last 1 minute (USD)
+    pub price_5m: f64,           // price over last 5 minutes (USD)
+    pub price_1h: f64,           // price over last 1 hour (USD)
+    pub price_6h: f64,           // price over last 6 hours (USD)
+    pub price_24h: f64,          // price over last 24 hours (USD)
 
     pub buys_1m: u64,            // number of buys in last 1 minute
     pub buys_5m: u64,            // number of buys in last 5 minutes
@@ -317,23 +339,23 @@ pub struct TokenTradeStats {
     pub sells_6h: u64,           // number of sells in last 6 hours
     pub sells_24h: u64,          // number of sells in last 24 hours
 
-    pub volume_1m: u64,          // total volume (buy+sell) in last 1 minute
-    pub volume_5m: u64,          // total volume (buy+sell) in last 5 minutes
-    pub volume_1h: u64,          // total volume (buy+sell) in last 1 hour
-    pub volume_6h: u64,          // total volume (buy+sell) in last 6 hours
-    pub volume_24h: u64,         // total volume (buy+sell) in last 24 hours
+    pub volume_1m: f64,          // total volume (buy+sell) (USD)
+    pub volume_5m: f64,
+    pub volume_1h: f64,
+    pub volume_6h: f64,
+    pub volume_24h: f64,
 
-    pub buy_volume_1m: u64,      // buy volume in last 1 minute
-    pub buy_volume_5m: u64,      // buy volume in last 5 minutes
-    pub buy_volume_1h: u64,      // buy volume in last 1 hour
-    pub buy_volume_6h: u64,      // buy volume in last 6 hours
-    pub buy_volume_24h: u64,     // buy volume in last 24 hours
+    pub buy_volume_1m: f64,
+    pub buy_volume_5m: f64,
+    pub buy_volume_1h: f64,
+    pub buy_volume_6h: f64,
+    pub buy_volume_24h: f64,
 
-    pub sell_volume_1m: u64,     // sell volume in last 1 minute
-    pub sell_volume_5m: u64,     // sell volume in last 5 minutes
-    pub sell_volume_1h: u64,     // sell volume in last 1 hour
-    pub sell_volume_6h: u64,     // sell volume in last 6 hours
-    pub sell_volume_24h: u64,    // sell volume in last 24 hours
+    pub sell_volume_1m: f64,
+    pub sell_volume_5m: f64,
+    pub sell_volume_1h: f64,
+    pub sell_volume_6h: f64,
+    pub sell_volume_24h: f64,
 }
 ```
 
@@ -454,7 +476,7 @@ pub struct TokenEarlyBuyers {
 pub struct FirstBuyTx {
     pub payer: String,     // Buyer address (payer of the transaction)
     pub signature: String, // Solana transaction signature
-    pub volume: u64,       // SOL volume (amount_in)
+    pub volume: f64,       // Quote volume (amount_in in quote units)
     pub timestamp: i64,    // When the trade happened
 }
 ```
@@ -703,20 +725,20 @@ pub struct CreatorTokenStats {
     pub id: String,                         // creator id (pubkey as string)
     pub last_updated_slot: u64,             // slot when last updated
 
-    pub tokens_created_by_creator: Vec<String>,  // list of token mints created
-    pub tokens_created_count: usize,             // number of tokens created
+    pub tokens_created_by_creator: BTreeSet<String>,  // set of token mints created
+    pub tokens_created_count: usize,                  // number of tokens created
 
-    pub tokens_migrated_by_creator: Vec<String>, // list of token mints migrated
-    pub tokens_migrated_count: usize,            // number migrated
+    pub tokens_migrated_by_creator: BTreeSet<String>, // set of token mints migrated
+    pub tokens_migrated_count: usize,                 // number migrated
 
-    pub tokens_with_mc_over_1m: Vec<String>,     // tokens with market cap > 1M
-    pub tokens_with_mc_1m_count: usize,          // count for > 1M
+    pub tokens_with_mc_over_1m: BTreeSet<String>,     // tokens with market cap > 1M USD
+    pub tokens_with_mc_1m_count: usize,               // count for > 1M
 
-    pub tokens_with_mc_over_5m: Vec<String>,     // tokens with market cap > 5M
-    pub tokens_with_mc_5m_count: usize,          // count for > 5M
+    pub tokens_with_mc_over_5m: BTreeSet<String>,     // tokens with market cap > 5M USD
+    pub tokens_with_mc_5m_count: usize,               // count for > 5M
 
-    pub tokens_with_mc_over_10m: Vec<String>,    // tokens with market cap > 10M
-    pub tokens_with_mc_10m_count: usize,         // count for > 10M
+    pub tokens_with_mc_over_10m: BTreeSet<String>,    // tokens with market cap > 10M USD
+    pub tokens_with_mc_10m_count: usize,              // count for > 10M
 }
 ```
 
